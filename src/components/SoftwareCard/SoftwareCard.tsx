@@ -1,16 +1,18 @@
 import Card from "react-bootstrap/Card";
 import { Row } from "react-bootstrap";
 import placeholder from "../../assets/placeholder.png"
-import Tag from "../Tag/Tag";
+import Tag, { TagProperties } from "../Tag/Tag";
+import { Link } from "react-router-dom";
 
 interface SoftwareProperties {
     id: number
     name: string,
     description: string,
     version: string,
-    tags: Array<string>,
+    tags: Array<TagProperties>,
     image: string | null,
 }
+
 function SoftwareCard({id, name, description, version, tags, image}: SoftwareProperties) {
     return (
         <Card style={{ width: '18rem' }}>
@@ -21,10 +23,10 @@ function SoftwareCard({id, name, description, version, tags, image}: SoftwarePro
                 <Card.Text className={"my-2"}>
                     {description}
                 </Card.Text>
-                <Card.Link href={"/soft/"+id}>Подробнее</Card.Link>
-                <Row xs={1} md={4} className="g-0 my-2">
-                    {tags.map((tag, idx) => (
-                        <Tag key={idx} name={tag}></Tag>
+                <Link to={"/soft/"+id}>Подробнее</Link>
+                <Row className="my-1">
+                    {tags.map((tag) => (
+                        <Tag key={tag.id} name={tag.name} id={tag.id}></Tag>
                     ))}
                 </Row>
             </Card.Body>

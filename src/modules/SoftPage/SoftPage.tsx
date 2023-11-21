@@ -1,4 +1,3 @@
-import React from 'react';
 import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import "./SoftPage.css"
@@ -21,10 +20,10 @@ function SoftPage() {
                         <Card.Title>software8</Card.Title>
                         <Card.Subtitle>Версия: 8.0</Card.Subtitle>
                         <Row className={"g-2 mt-1"} xs={1} md={4}>
-                            <Tag name={"tag8"}></Tag>
-                            <Tag name={"tag8"}></Tag>
-                            <Tag name={"tag8"}></Tag>
-                            <Tag name={"tag8"}></Tag>
+                            <Tag name={"tag8"} id={8}></Tag>
+                            <Tag name={"tag8"} id={8}></Tag>
+                            <Tag name={"tag8"} id={8}></Tag>
+                            <Tag name={"tag8"} id={8}></Tag>
                         </Row>
                     </Col>
                 </Row>

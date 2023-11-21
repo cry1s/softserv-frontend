@@ -3,6 +3,7 @@ import Card from 'react-bootstrap/Card';
 import { Button, Col, Form, Row } from "react-bootstrap";
 import SoftwareCard from "../../components/SoftwareCard/SoftwareCard";
 import Container from "react-bootstrap/Container";
+import { TagProperties } from '../../components/Tag/Tag';
 
 interface SoftwareProperties {
     software: {
@@ -12,7 +13,7 @@ interface SoftwareProperties {
         version: string,
         logo: string | null
     }
-    tags: Array<string>
+    tags: Array<TagProperties>
 }
 
 function HomePage() {
