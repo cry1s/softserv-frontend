@@ -1,5 +1,5 @@
 import Card from "react-bootstrap/Card";
-import {Button, Row} from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import placeholder from "../../assets/placeholder.png"
 import Tag from "../Tag/Tag";
 
