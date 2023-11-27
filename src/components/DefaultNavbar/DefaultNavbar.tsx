@@ -11,7 +11,7 @@ function DefaultNavbar() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/softserv-frontend/">Главная</Nav.Link>
-                        <Nav.Link href="/softserv-frontend/new">Новое</Nav.Link>
+                        <Nav.Link href="/softserv-frontend/#/new">Новое</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
             </Container>
