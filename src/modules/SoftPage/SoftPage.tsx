@@ -2,42 +2,79 @@ import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import "./SoftPage.css"
 import img from "../../assets/placeholder.png"
-import {Col, Row} from "react-bootstrap";
-import Tag from "../../components/Tag/Tag";
-import {useParams} from "react-router-dom";
+import { Col, Row } from "react-bootstrap";
+import Tag, { TagProperties } from "../../components/Tag/Tag";
+import { useParams } from "react-router-dom";
+import React, { useEffect } from "react";
+import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+
+interface SoftwareProperties {
+    software: {
+        id: number
+        name: string,
+        description: string,
+        version: string,
+        logo: string | null
+    }
+    tags: Array<TagProperties>
+}
 
 function SoftPage() {
-    const {id} = useParams();
-    console.log(id)
+    const { id } = useParams<{ id: string }>();
+
+    const [software, setSoftware] = React.useState<SoftwareProperties>({
+        software: {
+            id: 0,
+            name: "",
+            description: "",
+            version: "",
+            logo: null
+        },
+        tags: []
+    });
+
+    useEffect(() => {
+        fetch(`/api/software/${id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                setSoftware(data);
+            });
+    }, [id])
+
+
     return (
         <Container>
+            <Card bg={"light"} className={"mt-4"} body>
+                <Breadcrumbs name={software.software.name}></Breadcrumbs>
+            </Card>
             <Card bg={"light"} className={"mt-4 sw-card"} body>
                 <Row className={"g-4"} xs={1} md={4}>
-                    <Col style={{width: "auto"}}>
-                        <Card.Img src={img} className={"sw-img"}/>
+                    <Col style={{ width: "auto" }}>
+                        <Card.Img src={
+                            software.software.logo ? software.software.logo : img
+                        } className={"sw-img"} />
                     </Col>
                     <Col className={"w-"}>
-                        <Card.Title>software8</Card.Title>
-                        <Card.Subtitle>Версия: 8.0</Card.Subtitle>
-                        <Row className={"g-2 mt-1"} xs={1} md={4}>
-                            <Tag name={"tag8"} id={8}></Tag>
-                            <Tag name={"tag8"} id={8}></Tag>
-                            <Tag name={"tag8"} id={8}></Tag>
-                            <Tag name={"tag8"} id={8}></Tag>
+                        <Card.Title>
+                            {software.software.name}
+                        </Card.Title>
+                        <Card.Subtitle>
+                            Версия: {software.software.version}
+                        </Card.Subtitle>
+                        <Row className="my-1">
+                            {software.tags.map((tag) => (
+                                <Tag key={tag.id} name={tag.name} id={tag.id}></Tag>
+                            ))}
                         </Row>
                     </Col>
                 </Row>
-                <Card.Text className={"mt-4"}>Давно выяснено, что при оценке дизайна и композиции читаемый текст мешает сосредоточиться.
-                    Lorem Ipsum используют потому, что тот обеспечивает более или менее стандартное заполнение шаблона,
-                    а также реальное распределение букв и пробелов в абзацах, которое не получается при простой
-                    дубликации "Здесь ваш текст.. Здесь ваш текст.. Здесь ваш текст.." Многие программы электронной
-                    вёрстки и редакторы HTML используют Lorem Ipsum в качестве текста по умолчанию, так что поиск по
-                    ключевым словам "lorem ipsum" сразу показывает, как много веб-страниц всё ещё дожидаются своего
-                    настоящего рождения. За прошедшие годы текст Lorem Ipsum получил много версий. Некоторые версии
-                    появились по ошибке, некоторые - намеренно (например, юмористические варианты).</Card.Text>
+                <Card.Text className={"mt-4"}>
+                    {software.software.description}
+                </Card.Text>
             </Card>
         </Container>
     );
 }
 
 export default SoftPage;
+export type { SoftwareProperties };

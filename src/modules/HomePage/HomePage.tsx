@@ -3,18 +3,8 @@ import Card from 'react-bootstrap/Card';
 import { Button, Col, Form, Row } from "react-bootstrap";
 import SoftwareCard from "../../components/SoftwareCard/SoftwareCard";
 import Container from "react-bootstrap/Container";
-import { TagProperties } from '../../components/Tag/Tag';
-
-interface SoftwareProperties {
-    software: {
-        id: number
-        name: string,
-        description: string,
-        version: string,
-        logo: string | null
-    }
-    tags: Array<TagProperties>
-}
+import { SoftwareProperties } from '../SoftPage/SoftPage';
+import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 
 function HomePage() {
 
@@ -38,6 +28,9 @@ function HomePage() {
     return (
         <React.Fragment>
             <Container>
+                <Card bg={"light"} className={"mt-4"} body>
+                    <Breadcrumbs></Breadcrumbs>
+                </Card>
                 <Card bg={"light"} className={"mt-4"} body>Мощное программное обеспечение для вашего сервера.
                     Интуитивный интерфейс, высокая производительность, надежность и безопасность. Поддержка экспертов.
                     Обеспечьте успех своего бизнеса с нами!</Card>
