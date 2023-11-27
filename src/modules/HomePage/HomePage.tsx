@@ -18,19 +18,22 @@ interface SoftwareProperties {
 
 function HomePage() {
 
-    const [filteredSoftwares, setFilteredSoftwares] = React.useState<Array<SoftwareProperties>>([]);
     const [softwares, setSoftwares] = React.useState<Array<SoftwareProperties>>([]);
     const [searchField, setSearchField] = React.useState<string>("");
  
     useEffect(() => {
-        fetch("/api/softwares")
-            .then(response => response.json())
-            .then(data => {
-                setSoftwares(data.softwares)
-                setFilteredSoftwares(data.softwares)
-                console.log(data);
+        const url = new URL(window.location.href);
+        const searchParams = new URLSearchParams(url.search);
+        const search = searchParams.get("search");
+        if (search) {
+            setSearchField(search);
+        }
+        fetch(`/api/softwares${ searchField ? `?search=${searchField}` : "" }`)
+            .then((response) => response.json())
+            .then((data) => {
+                setSoftwares(data.softwares);
             });
-    }, []);
+    }, [searchField])
 
     return (
         <React.Fragment>
@@ -49,9 +52,6 @@ function HomePage() {
                                     value={searchField}
                                     onChange={(e) => {
                                         setSearchField(e.target.value);
-                                        setFilteredSoftwares(softwares.filter((software) => {
-                                            return software.software.name.toLowerCase().includes(e.target.value.toLowerCase())
-                                        }))
                                     }}
                                 />
                             </Col>
@@ -63,7 +63,7 @@ function HomePage() {
                 </Card>
                 <div className={"w-full mt-4"}>
                     <Row xs={1} md={4} className="g-5">
-                        {filteredSoftwares.map((software) => (
+                        {softwares.map((software) => (
                             <Col key={software.software.id}>
                                 <SoftwareCard name={software.software.name}
                                     description={software.software.description}
