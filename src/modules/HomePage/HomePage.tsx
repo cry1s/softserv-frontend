@@ -9,16 +9,18 @@ import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
 function HomePage() {
 
     const [softwares, setSoftwares] = React.useState<Array<SoftwareProperties>>([]);
-    const [searchField, setSearchField] = React.useState<string>("");
- 
+    const [searchField, setSearchField] = React.useState<string>(
+        new URLSearchParams(window.location.search).get("search") || ""
+    );
+
     useEffect(() => {
         const url = new URL(window.location.href);
         const searchParams = new URLSearchParams(url.search);
-        const search = searchParams.get("search");
-        if (search) {
-            setSearchField(search);
+        let search = searchParams.get("search");
+        if (!search) {
+            search = searchField;
         }
-        fetch(`/api/softwares${ searchField ? `?search=${searchField}` : "" }`)
+        fetch(`/api/softwares${ search ? `?search=${search}` : "" }`)
             .then((response) => response.json())
             .then((data) => {
                 setSoftwares(data.softwares);
@@ -49,7 +51,15 @@ function HomePage() {
                                 />
                             </Col>
                             <Col xs="auto">
-                                <Button type="submit" variant={"dark"}>Найти</Button>
+                                <Button variant={"dark"} onClick={
+                                    () => {
+                                        const url = new URL(window.location.href);
+                                        const searchParams = new URLSearchParams(url.search);
+                                        searchParams.set("search", searchField);
+                                        url.search = searchParams.toString();
+                                        window.location.href = url.toString();
+                                    }
+                                }>Найти</Button>
                             </Col>
                         </Row>
                     </Form>
