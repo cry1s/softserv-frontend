@@ -1,4 +1,9 @@
 import { SoftwareProperties } from "./modules/SoftPage/SoftPage";
+import docker from "./assets/docker.png"
+import registry from "./assets/registry.png"
+import kvm from "./assets/kvm.jpg"
+import k8s from "./assets/k8s.jpg"
+import vmware from "./assets/vmware.jpg"
 
 const softwareArray: SoftwareProperties[] = [
     {
@@ -7,7 +12,7 @@ const softwareArray: SoftwareProperties[] = [
             name: 'Docker Engine',
             description: 'Docker платформа контейнеризации',
             version: 'v20.3.7',
-            logo: null,
+            logo: docker,
         },
         tags: [{
             id: 0,
@@ -20,7 +25,7 @@ const softwareArray: SoftwareProperties[] = [
             name: 'Docker registry',
             description: 'Docker registry для хранения собранных образов',
             version: 'v20.3.7',
-            logo: null,
+            logo: registry,
         },
         tags: [{
             id: 0,
@@ -37,7 +42,7 @@ const softwareArray: SoftwareProperties[] = [
             name: 'kubernetes',
             description: 'Kubernetes оркестрация',
             version: 'v1.33.7',
-            logo: null,
+            logo: k8s,
         },
         tags: [{
             id: 0,
@@ -50,7 +55,7 @@ const softwareArray: SoftwareProperties[] = [
             name: 'VSphere',
             description: 'VMware управление виртуальными машинами',
             version: 'v2.0',
-            logo: null,
+            logo: vmware,
         },
         tags: [{
             id: 2,
@@ -63,7 +68,7 @@ const softwareArray: SoftwareProperties[] = [
             name: 'kvm',
             description: 'KVM (Kernel-based Virtual Machine) решение виртуализации',
             version: '8.3.2',
-            logo: null,
+            logo: kvm,
         },
         tags: [{
             id: 2,
