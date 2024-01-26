@@ -7,6 +7,7 @@ import Tag, { TagProperties } from "../../components/Tag/Tag";
 import { useParams } from "react-router-dom";
 import React, { useEffect } from "react";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import softwareArray from "../../model";
 
 interface SoftwareProperties {
     software: {
@@ -38,7 +39,14 @@ function SoftPage() {
             .then((response) => response.json())
             .then((data) => {
                 setSoftware(data);
-            });
+            })
+            .catch(_ => {
+                const iid = Number(id);
+                setSoftware({
+                    software: softwareArray[iid - 1].software,
+                    tags: softwareArray[iid - 1].tags
+                })
+            })
     }, [id])
 
 
