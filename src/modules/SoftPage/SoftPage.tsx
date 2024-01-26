@@ -53,16 +53,6 @@ function SoftPage() {
         });
     }, [dispatch, id])
 
-    const addToCart = () => {
-        dispatch(setLoading(true))
-        axios.post("/api/request/add", {software_id: parseInt(id)}).then(() => {
-            navigate("/")
-        }).catch(() => {
-            console.log("e");
-        }).finally(() => {
-            dispatch(setLoading(false))
-        });
-    }
 
     return (
         <Container>
@@ -93,11 +83,6 @@ function SoftPage() {
                             </Row>
                         </Col>
                     </Row>
-                    {auth && <Row className={"mt-4"}>
-                        <Col>
-                            <Button variant={"dark"} onClick={addToCart}>Добавить в корзину</Button>
-                        </Col>
-                    </Row>}
                     <Card.Text className={"mt-4"}>
                         {software.software.description}
                     </Card.Text>

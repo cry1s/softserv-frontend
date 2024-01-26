@@ -114,6 +114,7 @@ function CartPage() {
                                         tags={[]}
                                         image={sw.logo}
                                         source={sw.source}
+                                        showAddButton={false}
                                     />
                                 </Col>}
                             )}

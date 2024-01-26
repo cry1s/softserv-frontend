@@ -69,6 +69,11 @@ function HomePage() {
                             <Col xs="auto">
                                 <Button type="submit" variant={"dark"}>Найти</Button>
                             </Col>
+                           <Col xs="auto" className={"ms-auto"}>
+                                <Button variant={"light"} disabled={!request}>
+                                    <Link to={"/request/" + request}><img src={cart} alt="cart" width={40} height={40}/></Link>
+                                </Button>
+                            </Col> 
                         </Row>
                     </Form>
                 </Card>
@@ -84,17 +89,14 @@ function HomePage() {
                                     tags={software.tags}
                                     image={software.software.logo}
                                     source={software.software.source}
+                                    showAddButton={true}
+                                    callback={load}
                                 />
                             </Col>
                         ))}
                     </Row>
                 </div>
             </Container>
-            {request && <Link to={"/request/" + request}>
-                <div className={"cartbox"}>
-                    <img src={cart} alt={"cart"} style={{width: "70px", height: "70px"}}/>
-                </div>
-            </Link>}
         </React.Fragment>
     );
 }
