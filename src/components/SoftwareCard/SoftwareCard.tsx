@@ -35,3 +35,4 @@ function SoftwareCard({id, name, description, version, tags, image}: SoftwarePro
 }
 
 export default SoftwareCard;
+export type { SoftwareProperties };
