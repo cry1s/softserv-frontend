@@ -1,34 +1,36 @@
-import React, { useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from 'react-bootstrap/Card';
-import { Button, Col, Form, Row } from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import SoftwareCard from "../../components/SoftwareCard/SoftwareCard";
 import Container from "react-bootstrap/Container";
-import { SoftwareProperties } from '../SoftPage/SoftPage';
+import {SoftwareProperties} from '../SoftPage/SoftPage';
 import Breadcrumbs from '../../components/Breadcrumbs/Breadcrumbs';
-import softwareArray from '../../model';
+import {useDispatch} from "react-redux";
+import axios from "axios";
+import {setLoading} from "../../store/app";
+import {Link} from "react-router-dom";
+import cart from "../../assets/cart.png"
+import {useAuth} from "../../store/auth";
 
 function HomePage() {
+    const auth = useAuth();
     const [softwares, setSoftwares] = React.useState<Array<SoftwareProperties>>([]);
-    const [confSoftwares, setConfSoftwares] = React.useState<Array<SoftwareProperties>>([]);
     const [searchField, setSearchField] = React.useState<string>("");
- 
-    async function fetchSoft() {
-        try {
-            const response = await fetch(`/api/softwares${searchField ? `?search=${searchField}` : ""}`);
-            if (!response.ok) {
-                throw new Error('Ошибка при получении данных');
-            }
-            const data = await response.json();
+    const [confirmedSearch, setConfirmedSearch] = React.useState<string>("");
+    const [request, setRequest] = useState(null);
+    const dispatch = useDispatch();
+
+    const load = () => {
+        dispatch(setLoading(true));
+        axios.get(`/api/softwares${confirmedSearch ? `?search=${confirmedSearch}` : ""}`).then(({data}) => {
+            console.log(data);
+            setRequest(data.request_id);
             setSoftwares(data.softwares);
-            setConfSoftwares(softwares.filter(v => {
-                return v.software.name.toLowerCase().includes(searchField.toLowerCase());
-            }));
-        } catch {
-            setSoftwares(softwareArray);
-            setConfSoftwares(softwareArray.filter(v => {
-                return v.software.name.toLowerCase().includes(searchField.toLowerCase());
-            }));
-        }
+        }).catch(e => {
+            console.log(e);
+        }).finally(() => {
+            dispatch(setLoading(false))
+        });
     }
 
     useEffect(() => {
@@ -38,11 +40,8 @@ function HomePage() {
         if (search) {
             setSearchField(search);
         }
-
-        fetchSoft();
-
-        
-    }, [])
+        load();
+    }, [dispatch])
 
     return (
         <React.Fragment>
@@ -54,10 +53,7 @@ function HomePage() {
                     Интуитивный интерфейс, высокая производительность, надежность и безопасность. Поддержка экспертов.
                     Обеспечьте успех своего бизнеса с нами!</Card>
                 <Card bg={"light"} className={"mt-4"} body>
-                    <Form
-                        method='GET'
-                        action={`/softserv-frontend/#/${ searchField ? `?search=${searchField}` : "" }`}    
-                    >
+                    <Form onSubmit={(e) => {e.preventDefault(); e.stopPropagation(); setConfirmedSearch(searchField); load()}}>
                         <Row>
                             <Col xs="auto">
                                 <Form.Control
@@ -66,34 +62,39 @@ function HomePage() {
                                     className=" mr-sm-2"
                                     value={searchField}
                                     onChange={(e) => {
-                                        e.preventDefault();
                                         setSearchField(e.target.value);
                                     }}
-                                    
                                 />
                             </Col>
                             <Col xs="auto">
-                                <Button variant={"dark"} onClick={(e) => {
-                                        e.preventDefault();
-                                        fetchSoft()
-                                    }}>Найти</Button>
+                                <Button type="submit" variant={"dark"}>Найти</Button>
                             </Col>
                         </Row>
                     </Form>
                 </Card>
                 <div className={"w-full mt-4"}>
                     <Row xs={1} md={4} className="g-5">
-                        {confSoftwares.map((software) => (
+                        {softwares.map((software) => (
                             <Col key={software.software.id}>
-                                <SoftwareCard name={software.software.name}
+                                <SoftwareCard
+                                    name={software.software.name}
                                     description={software.software.description}
-                                    version={software.software.version} id={software.software.id} tags={software.tags}
-                                    image={software.software.logo}></SoftwareCard>
+                                    version={software.software.version}
+                                    id={software.software.id}
+                                    tags={software.tags}
+                                    image={software.software.logo}
+                                    source={software.software.source}
+                                />
                             </Col>
                         ))}
                     </Row>
                 </div>
             </Container>
+            {request && <Link to={"/request/" + request}>
+                <div className={"cartbox"}>
+                    <img src={cart} alt={"cart"} style={{width: "70px", height: "70px"}}/>
+                </div>
+            </Link>}
         </React.Fragment>
     );
 }

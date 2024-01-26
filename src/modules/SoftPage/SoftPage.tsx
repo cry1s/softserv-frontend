@@ -2,15 +2,19 @@ import Container from "react-bootstrap/Container";
 import Card from "react-bootstrap/Card";
 import "./SoftPage.css"
 import img from "../../assets/placeholder.png"
-import { Col, Row } from "react-bootstrap";
-import Tag, { TagProperties } from "../../components/Tag/Tag";
-import { useParams } from "react-router-dom";
-import React, { useEffect } from "react";
+import {Button, Col, Row} from "react-bootstrap";
+import Tag, {TagProperties} from "../../components/Tag/Tag";
+import {useNavigate, useParams} from "react-router-dom";
+import React, {useEffect} from "react";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
-import softwareArray from "../../model";
+import {useAuth} from "../../store/auth";
+import axios from "axios";
+import {useDispatch} from "react-redux";
+import {setLoading} from "../../store/app";
 
 interface SoftwareProperties {
     software: {
+        source: string;
         id: number
         name: string,
         description: string,
@@ -21,34 +25,44 @@ interface SoftwareProperties {
 }
 
 function SoftPage() {
-    const { id } = useParams<{ id: string }>();
-
+    const {id} = useParams<{ id: string }>();
+    const auth = useAuth();
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const [software, setSoftware] = React.useState<SoftwareProperties>({
         software: {
             id: 0,
             name: "",
             description: "",
             version: "",
-            logo: null
+            logo: img,
+            source: ""
         },
         tags: []
     });
 
     useEffect(() => {
-        fetch(`/api/software/${id}`)
-            .then((response) => response.json())
-            .then((data) => {
+        dispatch(setLoading(true));
+        axios.get(`/api/software/${id}`)
+            .then(({data}) => {
                 setSoftware(data);
-            })
-            .catch(_ => {
-                const iid = Number(id);
-                setSoftware({
-                    software: softwareArray[iid - 1].software,
-                    tags: softwareArray[iid - 1].tags
-                })
-            })
-    }, [id])
+            }).catch((e) => {
+            console.log(e)
+        }).finally(() => {
+            dispatch(setLoading(false))
+        });
+    }, [dispatch, id])
 
+    const addToCart = () => {
+        dispatch(setLoading(true))
+        axios.post("/api/request/add", {software_id: parseInt(id)}).then(() => {
+            navigate("/")
+        }).catch(() => {
+            console.log("e");
+        }).finally(() => {
+            dispatch(setLoading(false))
+        });
+    }
 
     return (
         <Container>
@@ -56,33 +70,41 @@ function SoftPage() {
                 <Breadcrumbs name={software.software.name}></Breadcrumbs>
             </Card>
             <Card bg={"light"} className={"mt-4 sw-card"} body>
-                <Row className={"g-4"} xs={1} md={4}>
-                    <Col style={{ width: "auto" }}>
-                        <Card.Img src={
-                            software.software.logo ? software.software.logo : img
-                        } className={"sw-img"} />
-                    </Col>
-                    <Col className={"w-"}>
-                        <Card.Title>
-                            {software.software.name}
-                        </Card.Title>
-                        <Card.Subtitle>
-                            Версия: {software.software.version}
-                        </Card.Subtitle>
-                        <Row className="my-1">
-                            {software.tags.map((tag) => (
-                                <Tag key={tag.id} name={tag.name} id={tag.id}></Tag>
-                            ))}
-                        </Row>
-                    </Col>
-                </Row>
-                <Card.Text className={"mt-4"}>
-                    {software.software.description}
-                </Card.Text>
-            </Card>
-        </Container>
+                    <Row className={"g-4"} xs={1} md={4}>
+                        <Col style={{width: "auto"}}>
+                            <Card.Img src={
+                                software.software.logo ? software.software.logo : img
+                            } className={"sw-img"} />
+                        </Col>
+                        <Col className={"w-"}>
+                            <Card.Title>
+                                {software.software.name}
+                            </Card.Title>
+                            <Card.Subtitle>
+                                Версия: {software.software.version}
+                            </Card.Subtitle>
+                                <Card.Link href={software.software.source} target={"_blank"} rel="noreferrer">
+                                    Источник
+                                </Card.Link>
+                            <Row className="my-1 g-2" xs={"auto"}>
+                                {software.tags.map((tag) => (
+                                    <Tag key={tag.id} name={tag.name} id={tag.id}></Tag>
+                                ))}
+                            </Row>
+                        </Col>
+                    </Row>
+                    {auth && <Row className={"mt-4"}>
+                        <Col>
+                            <Button variant={"dark"} onClick={addToCart}>Добавить в корзину</Button>
+                        </Col>
+                    </Row>}
+                    <Card.Text className={"mt-4"}>
+                        {software.software.description}
+                    </Card.Text>
+                </Card>
+            </Container>
     );
 }
 
 export default SoftPage;
-export type { SoftwareProperties };
+export type {SoftwareProperties};

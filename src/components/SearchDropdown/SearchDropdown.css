@@ -1,0 +1,16 @@
+.dropdown-results {
+    background-color: #fff;
+    width: 100%;
+    border: 1px solid rgba(0, 0, 0, 0.175);
+    border-radius: 5px;
+    z-index: 100;
+}
+
+.dropdown-selector {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.dropdown-selector:hover {
+    background-color: #eee;
+}

@@ -4,6 +4,7 @@ import { Breadcrumb } from "react-bootstrap";
 
 interface IBreadcrumps {
   name?: string;
+  path?: [{name: string, path: string}]
 }
 
 const Breadcrumbs: FC<IBreadcrumps> = (props) => {
@@ -22,6 +23,11 @@ const Breadcrumbs: FC<IBreadcrumps> = (props) => {
       >
         Каталог
       </Breadcrumb.Item>
+      {props.path && props.path.map(p =>
+        <Breadcrumb.Item linkAs={Link} linkProps={{ to: p.path }} className="breadcrump active">
+          {p.name}
+        </Breadcrumb.Item>
+      )}
       <Breadcrumb.Item active className="breadcrump active">
         {name}
       </Breadcrumb.Item>
