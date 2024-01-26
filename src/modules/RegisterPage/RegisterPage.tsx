@@ -44,6 +44,7 @@ function RegisterPage() {
                             placeholder="Логин"
                             value={username}
                             onChange={e => setUsername(e.target.value)}
+                            required
                         />
                         <Form.Control
                             className={"mb-4"}
@@ -51,6 +52,7 @@ function RegisterPage() {
                             placeholder="Пароль"
                             value={password}
                             onChange={e => setPassword(e.target.value)}
+                            required
                         />
                         <Row>
                             <Col xs="auto">

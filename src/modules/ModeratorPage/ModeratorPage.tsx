@@ -4,24 +4,22 @@ import Card from "react-bootstrap/Card";
 import axios from "axios";
 import {setLoading} from "../../store/app";
 import {useDispatch} from "react-redux";
-import {Button, Col, Row, Table} from "react-bootstrap";
+import {Button, Col, Form, Row, Table} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 
 function ModeratorPage() {
     const [softwares, setSoftwares] = useState([]);
-
+    const [name, setName] = useState("");
     const dispatch = useDispatch();
 
     const load = () => {
         dispatch(setLoading(true));
-        axios.get(`/api/softwares`).then(({data}) => {
-            setSoftwares(data.softwares);
-        }).catch(e => {
-            console.log(e);
+        axios.get(`/api/softwares` + (name ? `?search=${name}` : "")).then(({data}) => {
+            setSoftwares(data.softwares)
         }).finally(() => {
             dispatch(setLoading(false))
-        });
+        })
     }
 
     useEffect(() => {
@@ -39,6 +37,28 @@ function ModeratorPage() {
                 <Card bg={"light"} className={"mt-4"} body>
                     <Breadcrumbs name={"Услуги"}></Breadcrumbs>
                 </Card>
+                <Card bg={"light"} className={"mt-4"} body>
+                    <Form onSubmit={e => {
+                        load();
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }}>
+                        <Row>
+                            <Col>
+                                <Form.Control
+                                    placeholder="Поиск"
+                                    onChange={e => setName(e.target.value)}
+                                    value={name}
+                                />
+                            </Col>
+                            <Col xs="auto">
+                                <Button type="submit" variant={"dark"}>Найти</Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Card>
+
+                    <Row className={"justify-content-between"}></Row>
                 <Card bg={"light"} className={"mt-4"} body>
                     <Row className={"mb-4"}>
                         <Col className={"align-self-end"} xs={1} md={4}>

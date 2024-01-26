@@ -81,7 +81,7 @@ function RequestsPage() {
         <Container>
             <Card bg={"light"} className={"mt-4"} body>
                 <Breadcrumbs name={"Заявки"}></Breadcrumbs>
-            </Card>
+            </Card>{auth?.moderator &&
             <Card bg={"light"} className={"mt-4"} body>
                 <Form>
                     <Row className={"justify-content-between"}>
@@ -122,7 +122,7 @@ function RequestsPage() {
                                 <Dropdown.Item eventKey={"deleted"}>Удалена</Dropdown.Item>
                             </DropdownButton>
                         </Col>
-                        {auth?.moderator && <> <Col xs="auto" className={"py-1"}>
+                        <Col xs="auto" className={"py-1"}>
                             <Form.Label>Клиент</Form.Label>
                         </Col>
                             <Col xs="auto">
@@ -133,10 +133,10 @@ function RequestsPage() {
                                     value={filterName}
                                     onChange={(e) => setFilterName(e.target.value)}
                                 />}
-                            </Col></>}
+                            </Col>
                     </Row>
                 </Form>
-            </Card>
+            </Card>}
             <Card bg={"light"} className={"mt-4"} body>
                 <Table striped bordered hover>
                     <thead>
@@ -158,7 +158,7 @@ function RequestsPage() {
                             <td>{new Date(r.request.created_at?.secs_since_epoch * 1000).toLocaleString()}</td>
                             <td>{r.request.processed_at ? new Date(r.request.processed_at?.secs_since_epoch * 1000).toLocaleString() : "-"}</td>
                             <td>{r.request.completed_at ? new Date(r.request.completed_at?.secs_since_epoch * 1000).toLocaleString() : "-"}</td>
-                            <td>{r.request.modername ?? "-"}</td>
+                            <td>{r.modername ?? "-"}</td>
                             <td style={{ width: "200px" }}>
                                 <Row style={{ width: "200px" }}>
                                     <Col style={{ width: "100px" }}>

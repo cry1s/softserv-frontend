@@ -65,6 +65,24 @@ function CartPage() {
         })
     }
 
+    const completeRequest = () => {
+        dispatch(setLoading(true));
+        axios.patch("/api/request/" + id + '/user', {status: "completed"}).then(() => {
+            setDone(true);
+        }).finally(() => {
+            dispatch(setLoading(false));
+        })
+    }
+
+    const cancelRequest = () => {
+        dispatch(setLoading(true));
+        axios.patch("/api/request/" + id + '/user', {status: "canceled"}).then(() => {
+            setDone(true);
+        }).finally(() => {
+            dispatch(setLoading(false));
+        })
+    }
+
     const removeSoftware = (sid) => {
         dispatch(setLoading(true));
         axios.delete("/api/request/"+id+"/remove_software/"+sid).finally(() => {
@@ -137,6 +155,8 @@ function CartPage() {
                             />
                             { !login?.moderator && request.status === "created" && <Button type="submit" variant={"dark"}>Подтвердить</Button> }
                             { !login?.moderator && request.status === "created" && <Button variant={"dark"} onClick={deleteRequest} className={"ms-2"}>Удалить</Button> }
+                            { login?.moderator && request.status === "processed" && <Button variant={"dark"} onClick={completeRequest} className={"ms-2"}>Завершить</Button> }
+                            { login?.moderator && request.status === "processed" && <Button variant={"dark"} onClick={cancelRequest} className={"ms-2"}>Отклонить</Button> }
                         </Form>
                     </Card>
                 </Col>
