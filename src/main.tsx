@@ -12,7 +12,6 @@ import {Provider} from "react-redux";
 import {store} from "./store/store";
 import CartPage from "./modules/CartPage/CartPage";
 import Root from "./modules/Root/Root";
-import ModeratorPage from "./modules/ModeratorPage/ModeratorPage";
 import NewPage from "./modules/NewPage/NewPage";
 import RequestsPage from "./modules/RequestsPage/RequestsPage";
 import EditPage from "./modules/EditPage/EditPage";
@@ -30,7 +29,6 @@ const router = createHashRouter(
                 <Route path="edit/:id" element={<EditPage/>}/>
                 <Route path="new" element={<NewPage/>}/>
                 <Route path="requests" element={<RequestsPage/>}/>
-                <Route path="services" element={<ModeratorPage/>}/>
                 <Route path="soft/:id" element={<SoftPage/>}/>
             </Route>
         </>

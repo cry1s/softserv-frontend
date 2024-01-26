@@ -42,12 +42,6 @@ function RequestsPage() {
 
     useEffect(() => {
         load(true);
-        const itv = setInterval(() => {
-            setTime(t => t + 1);
-        }, 5000)
-        return () => {
-            clearInterval(itv)
-        }
     }, [])
 
     useEffect(() => {
@@ -81,61 +75,6 @@ function RequestsPage() {
         <Container>
             <Card bg={"light"} className={"mt-4"} body>
                 <Breadcrumbs name={"Заявки"}></Breadcrumbs>
-            </Card>
-            <Card bg={"light"} className={"mt-4"} body>
-                <Form>
-                    <Row className={"justify-content-between"}>
-                        <Col xs="auto" className={"py-1"}>
-                            <Form.Label>Создана от</Form.Label>
-                        </Col>
-                        <Col xs="auto">
-                            <Form.Control
-                                type="date"
-                                placeholder="Создана от"
-                                className=" mr-sm-2"
-                                value={dateStart}
-                                onChange={(e) => setDateStart(e.target.value)}
-                            />
-                        </Col>
-                        <Col xs="auto" className={"py-1"}>
-                            <Form.Label>Создана до</Form.Label>
-                        </Col>
-                        <Col xs="auto">
-                            <Form.Control
-                                type="date"
-                                placeholder="Создана до"
-                                className=" mr-sm-2"
-                                value={dateEnd}
-                                onChange={(e) => setDateEnd(e.target.value)}
-                            />
-                        </Col>
-                        <Col xs="auto" className={"py-1"}>
-                            <Form.Label>Статус</Form.Label>
-                        </Col>
-                        <Col xs="auto">
-                            <DropdownButton title={translateStatus(filterStatus)} variant={"secondary"} onSelect={(e) => setFilterStatus(e)}>
-                                <Dropdown.Item eventKey={"all"}>Все</Dropdown.Item>
-                                <Dropdown.Item eventKey={"created"}>Создана</Dropdown.Item>
-                                <Dropdown.Item eventKey={"processed"}>В обработке</Dropdown.Item>
-                                <Dropdown.Item eventKey={"completed"}>Выполнена</Dropdown.Item>
-                                <Dropdown.Item eventKey={"canceled"}>Отменена</Dropdown.Item>
-                                <Dropdown.Item eventKey={"deleted"}>Удалена</Dropdown.Item>
-                            </DropdownButton>
-                        </Col>
-                        {auth?.moderator && <> <Col xs="auto" className={"py-1"}>
-                            <Form.Label>Клиент</Form.Label>
-                        </Col>
-                            <Col xs="auto">
-                                {<Form.Control
-                                    type="text"
-                                    placeholder="Клиент"
-                                    className=" mr-sm-2"
-                                    value={filterName}
-                                    onChange={(e) => setFilterName(e.target.value)}
-                                />}
-                            </Col></>}
-                    </Row>
-                </Form>
             </Card>
             <Card bg={"light"} className={"mt-4"} body>
                 <Table striped bordered hover>

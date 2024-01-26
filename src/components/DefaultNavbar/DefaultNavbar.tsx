@@ -16,7 +16,6 @@ function DefaultNavbar() {
                         <Nav className="me-auto">
                             <LinkContainer to={"/"}><Nav.Link>Главная</Nav.Link></LinkContainer>
                             {login && <LinkContainer to={"/requests"}><Nav.Link>Заявки</Nav.Link></LinkContainer>}
-                            {login?.moderator && <LinkContainer to={"/services"}><Nav.Link>Услуги</Nav.Link></LinkContainer>}
                         </Nav>
                     </Navbar.Collapse>
                     <Nav className="me-auto">
