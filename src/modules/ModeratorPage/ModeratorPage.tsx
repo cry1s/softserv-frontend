@@ -7,6 +7,7 @@ import {useDispatch} from "react-redux";
 import {Button, Col, Form, Row, Table} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
+import placeholder from "../../assets/placeholder.png"
 
 function ModeratorPage() {
     const [softwares, setSoftwares] = useState([]);
@@ -69,6 +70,7 @@ function ModeratorPage() {
                         <thead>
                         <tr>
                             <th>#</th>
+                            <th>Изображение</th>
                             <th>Имя</th>
                             <th>Описание</th>
                             <th>Версия</th>
@@ -78,6 +80,7 @@ function ModeratorPage() {
                         {softwares.map((sw =>
                                 <tr key={sw.software.id}>
                                     <td>{sw.software.id}</td>
+                                    <td><img width={"150px"}src={sw.software.logo || placeholder}></img></td>
                                     <td>{sw.software.name}</td>
                                     <td>{sw.software.description}</td>
                                     <td>{sw.software.version}</td>

@@ -9,6 +9,7 @@ import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import {Button, Form, Row} from "react-bootstrap";
 import SearchDropdown from "../../components/SearchDropdown/SearchDropdown";
 import Tag from "../../components/Tag/Tag";
+import placeholder from "../../assets/placeholder.png"
 
 function EditPage() {
     const {id} = useParams<{ id: string }>();
@@ -16,6 +17,7 @@ function EditPage() {
     const [version, setVersion] = useState("");
     const [source, setSource] = useState("");
     const [description, setDescription] = useState("");
+    const [logo, setLogo] = useState(null);
     const [upload, setUpload] = useState([]);
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -27,6 +29,7 @@ function EditPage() {
         dispatch(setLoading(true))
         axios.get("/api/software/" + id).then(res => {
             setName(res.data.software.name);
+            setLogo(res.data.software.logo);
             setVersion(res.data.software.version);
             setDescription(res.data.software.description);
             setSource(res.data.software.source);
@@ -112,6 +115,7 @@ function EditPage() {
                     </Form.Group>
                     <Form.Group controlId="editForm.ControlLogo" className="mb-3">
                         <Form.Label>Изображение</Form.Label>
+                        <Row style={{width: "200px", marginBottom: "5px"}}><img width={"150px"} src={logo || placeholder}></img></Row>
                         <Form.Control type="file" onChange={e => setUpload(e.target.files)}/>
                     </Form.Group>
                 </Card>

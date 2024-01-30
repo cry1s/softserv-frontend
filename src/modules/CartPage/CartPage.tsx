@@ -4,7 +4,6 @@ import Breadcrumbs from "../../components/Breadcrumbs/Breadcrumbs";
 import Card from "react-bootstrap/Card";
 import SoftwareCard from "../../components/SoftwareCard/SoftwareCard";
 import {Button, Col, Form, Row} from "react-bootstrap";
-import {useCart} from "../../store/cart";
 import axios from "axios";
 import {Link, useParams} from "react-router-dom";
 import {useDispatch} from "react-redux";
@@ -17,7 +16,6 @@ function CartPage() {
     const [request, setRequest] = useState([]);
     const [host, setHost] = useState("");
     const [pass, setPass] = useState("");
-    const [done, setDone] = useState(false);
     const dispatch = useDispatch();
     const login = useAuth();
 
@@ -44,9 +42,6 @@ function CartPage() {
             .then(() => {
                 return axios.patch("/api/request/" + id + '/user', {status: "processed"})
             })
-            .then(() => {
-                setDone(true);
-            })
             .catch(e => {
                 console.log(e)
             }).finally(() => {
@@ -58,30 +53,11 @@ function CartPage() {
 
     const deleteRequest = () => {
         dispatch(setLoading(true));
-        axios.patch("/api/request/" + id + '/user', {status: "deleted"}).then(() => {
-            setDone(true);
-        }).finally(() => {
+        axios.patch("/api/request/" + id + '/user', {status: "deleted"}).finally(() => {
             dispatch(setLoading(false));
         })
     }
 
-    const completeRequest = () => {
-        dispatch(setLoading(true));
-        axios.patch("/api/request/" + id + '/user', {status: "completed"}).then(() => {
-            setDone(true);
-        }).finally(() => {
-            dispatch(setLoading(false));
-        })
-    }
-
-    const cancelRequest = () => {
-        dispatch(setLoading(true));
-        axios.patch("/api/request/" + id + '/user', {status: "canceled"}).then(() => {
-            setDone(true);
-        }).finally(() => {
-            dispatch(setLoading(false));
-        })
-    }
 
     const removeSoftware = (sid) => {
         dispatch(setLoading(true));
@@ -94,7 +70,6 @@ function CartPage() {
 
     return (
         <Container>
-            {!done ?
             <Row className="g-4">
                 <Col sm={8}>
                     <Card bg={"light"} className={"mt-4"} body>
@@ -154,22 +129,12 @@ function CartPage() {
                                 }}
                                 required
                             />
-                            { !login?.moderator && request.status === "created" && <Button type="submit" variant={"dark"}>Подтвердить</Button> }
-                            { !login?.moderator && request.status === "created" && <Button variant={"dark"} onClick={deleteRequest} className={"ms-2"}>Удалить</Button> }
-                            { login?.moderator && request.status === "processed" && <Button variant={"dark"} onClick={completeRequest} className={"ms-2"}>Завершить</Button> }
-                            { login?.moderator && request.status === "processed" && <Button variant={"dark"} onClick={cancelRequest} className={"ms-2"}>Отклонить</Button> }
+                            { request.status === "created" && <Button type="submit" variant={"dark"}>Оформить</Button> }
+                            { request.status === "created" && <Button variant={"dark"} onClick={deleteRequest} className={"ms-2"}>Удалить</Button> }
                         </Form>
                     </Card>
                 </Col>
             </Row>
-            :
-                <Card bg={"light"} className={"mt-4"} body>
-                    <Card.Title>Операция завершена</Card.Title>
-                    <Card.Text>Вернитесь в каталог, чтобы оформить заявку!</Card.Text>
-                    <Link to={"/"}><Button variant={"dark"}>Каталог</Button></Link>
-                </Card>
-            }
-
         </Container>
     );
 }

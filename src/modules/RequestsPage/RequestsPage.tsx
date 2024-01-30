@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setLoading } from "../../store/app";
+import { setEndDate, setLoading, setStartDate, setStatus, useEndDate, useStartDate, useStatus } from "../../store/app";
 import Container from "react-bootstrap/Container";
 import { Button, Col, Dropdown, DropdownButton, Form, Row, Table } from "react-bootstrap";
 import Card from "react-bootstrap/Card";
@@ -11,12 +11,12 @@ import { useAuth } from '../../store/auth';
 
 function RequestsPage() {
     const [requests, setRequests] = useState([]);
-    const [dateStart, setDateStart] = useState();
-    const [dateEnd, setDateEnd] = useState();
+    const dateStart = useStartDate();
+    const dateEnd = useEndDate();
     const dispatch = useDispatch();
     const auth = useAuth();
 
-    const [filterStatus, setFilterStatus] = useState("all");
+    const filterStatus = useStatus();
     const [filterName, setFilterName] = useState("");
 
     const [time, setTime] = useState("");
@@ -77,6 +77,23 @@ function RequestsPage() {
         }
     }
 
+    
+    const completeRequest = (id) => {
+        dispatch(setLoading(true));
+        axios.patch("/api/request/" + id + '/user', {status: "completed"}).finally(() => {
+            load(true)
+            dispatch(setLoading(false));
+        })
+    }
+
+    const cancelRequest = (id) => {
+        dispatch(setLoading(true));
+        axios.patch("/api/request/" + id + '/user', {status: "canceled"}).finally(() => {
+            load(true)
+            dispatch(setLoading(false));
+        })
+    }
+
     return (
         <Container>
             <Card bg={"light"} className={"mt-4"} body>
@@ -94,7 +111,7 @@ function RequestsPage() {
                                 placeholder="Создана от"
                                 className=" mr-sm-2"
                                 value={dateStart}
-                                onChange={(e) => setDateStart(e.target.value)}
+                                onChange={(e) => dispatch(setStartDate(e.target.value))}
                             />
                         </Col>
                         <Col xs="auto" className={"py-1"}>
@@ -106,14 +123,14 @@ function RequestsPage() {
                                 placeholder="Создана до"
                                 className=" mr-sm-2"
                                 value={dateEnd}
-                                onChange={(e) => setDateEnd(e.target.value)}
+                                onChange={(e) => dispatch(setEndDate(e.target.value))}
                             />
                         </Col>
                         <Col xs="auto" className={"py-1"}>
                             <Form.Label>Статус</Form.Label>
                         </Col>
                         <Col xs="auto">
-                            <DropdownButton title={translateStatus(filterStatus)} variant={"secondary"} onSelect={(e) => setFilterStatus(e)}>
+                            <DropdownButton title={translateStatus(filterStatus)} variant={"secondary"} onSelect={(e) => dispatch(setStatus(e))}>
                                 <Dropdown.Item eventKey={"all"}>Все</Dropdown.Item>
                                 <Dropdown.Item eventKey={"created"}>Создана</Dropdown.Item>
                                 <Dropdown.Item eventKey={"processed"}>В обработке</Dropdown.Item>
@@ -148,6 +165,9 @@ function RequestsPage() {
                             <th>Дата формирования</th>
                             <th>Дата завершения</th>
                             <th>Специалист</th>
+                            <th>Подробнее</th>
+                            {auth?.moderator && <th>Завершить</th>}
+                            {auth?.moderator && <th>Отменить</th>}
                         </tr>
                     </thead>
                     <tbody>
@@ -159,13 +179,15 @@ function RequestsPage() {
                             <td>{r.request.processed_at ? new Date(r.request.processed_at?.secs_since_epoch * 1000).toLocaleString() : "-"}</td>
                             <td>{r.request.completed_at ? new Date(r.request.completed_at?.secs_since_epoch * 1000).toLocaleString() : "-"}</td>
                             <td>{r.modername ?? "-"}</td>
-                            <td style={{ width: "200px" }}>
-                                <Row style={{ width: "200px" }}>
+                            <td style={{ width: "150px" }}>
+                                <Row style={{ width: "150px" }}>
                                     <Col style={{ width: "100px" }}>
                                         <Link to={"/request/" + r.request.id}><Button variant={"dark"} size={"sm"} style={{ width: "100%" }}>Подробнее</Button></Link>
                                     </Col>
                                 </Row>
                             </td>
+                            {auth?.moderator && <td>{ r.request.status === "processed" && <Button variant={"dark"} onClick={() => completeRequest(r.request.id)} className={"ms-2"}>Завершить</Button>}</td>}
+                            {auth?.moderator && <td>{ r.request.status === "processed" && <Button variant={"dark"} onClick={() => cancelRequest(r.request.id)} className={"ms-2"}>Отменить</Button>}</td>}
                         </tr>)}
                     </tbody>
                 </Table>
